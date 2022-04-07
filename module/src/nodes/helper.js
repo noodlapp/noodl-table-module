@@ -1,3 +1,28 @@
+function isPercentage(size) {
+  return (size && size[size.length - 1] === '%');
+}
+
+function getPercentage(size) {
+  return Number(size.slice(0, -1));
+}
+
+function getSizeWithMargins(size, startMargin, endMargin) {
+  if (!startMargin && !endMargin) {
+    return size;
+  }
+
+  let css = `calc(${size}`;
+  if (startMargin) {
+    css += ` - ${startMargin}`;
+  }
+  if (endMargin) {
+    css += ` - ${endMargin}`;
+  }
+  css += ')';
+
+  return css;
+}
+
 module.exports = {
   paddingCssProps: {
     paddingLeft: {
@@ -124,4 +149,48 @@ module.exports = {
       default: "rgba(0,0,0,0.2)",
     },
   },
+
+  size(style, props) {
+    if (props.parentLayout === 'none') {
+      style.position = 'absolute';
+    }
+
+    if (props.sizeMode === 'explicit') {
+      style.width = props.width;
+      style.height = props.height;
+    } else if (props.sizeMode === 'contentHeight') {
+      style.width = props.width;
+    } else if (props.sizeMode === 'contentWidth') {
+      style.height = props.height;
+    }
+
+    style.flexShrink = 0;
+
+    if (props.parentLayout === 'row' && style.position === 'relative') {
+      if (isPercentage(style.width) && !props.fixedWidth) {
+        style.flexGrow = getPercentage(style.width);
+        style.flexShrink = 1;
+      }
+
+      if (isPercentage(style.height) && !props.fixedHeight) {
+        style.height = getSizeWithMargins(style.height, style.marginTop, style.marginBottom);
+      }
+    } else if (props.parentLayout === 'column' && style.position === 'relative') {
+      if (isPercentage(style.width) && !props.fixedWidth) {
+        style.width = getSizeWithMargins(style.width, style.marginLeft, style.marginRight);
+      }
+
+      if (isPercentage(style.height) && !props.fixedHeight) {
+        style.flexGrow = getPercentage(style.height);
+        style.flexShrink = 1;
+      }
+    } else if (style.position !== 'relative') {
+      if (isPercentage(style.width)) {
+        style.width = getSizeWithMargins(style.width, style.marginLeft, style.marginRight);
+      }
+      if (isPercentage(style.height)) {
+        style.height = getSizeWithMargins(style.height, style.marginTop, style.marginBottom);
+      }
+    }
+  }
 };

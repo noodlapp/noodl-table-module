@@ -50,6 +50,9 @@ const TableCellNode = Noodl.defineReactNode({
         ],
       },
       default: "td",
+      tooltip: {
+        standard: 'Data Table Cell Or Header Table Cell',
+      }
     },
     visible: {
       index: 210,
@@ -68,18 +71,6 @@ const TableCellNode = Noodl.defineReactNode({
     ...boxShadowProps,
   },
   inputCss: {
-    height: {
-      index: 100,
-      group: "Dimensions",
-      displayName: "Height",
-      type: {
-        name: "number",
-        units: ["px"],
-        defaultUnit: "px",
-      },
-      default: undefined,
-      allowVisualStates: true,
-    },
     opacity: {
       index: 200,
       group: "Style",
@@ -95,6 +86,22 @@ const TableCellNode = Noodl.defineReactNode({
       type: "color",
       allowVisualStates: true,
       default: "transparent",
+      applyDefault: false,
+    },
+    justifyContent: {
+      index: 14,
+      group: "Align and justify content",
+      displayName: "Justify Content",
+      type: {
+        name: "enum",
+        enums: [
+          { label: "Start", value: "flex-start" },
+          { label: "End", value: "flex-end" },
+          { label: "Center", value: "center" },
+        ],
+        alignComp: "justify-content",
+      },
+      default: "flex-start",
       applyDefault: false,
     },
     ...paddingCssProps,

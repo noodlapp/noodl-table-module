@@ -54,7 +54,7 @@ const TableRowNode = Noodl.defineReactNode({
   },
   inputCss: {
     height: {
-      index: 1,
+      index: 101,
       group: "Dimensions",
       displayName: "Height",
       type: {
@@ -80,22 +80,6 @@ const TableRowNode = Noodl.defineReactNode({
       type: "color",
       allowVisualStates: true,
       default: "transparent",
-      applyDefault: false,
-    },
-    justifyContent: {
-      index: 14,
-      group: "Align and justify content",
-      displayName: "Justify Content",
-      type: {
-        name: "enum",
-        enums: [
-          { label: "Start", value: "flex-start" },
-          { label: "End", value: "flex-end" },
-          { label: "Center", value: "center" },
-        ],
-        alignComp: "justify-content",
-      },
-      default: "flex-start",
       applyDefault: false,
     },
   },

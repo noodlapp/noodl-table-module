@@ -354,6 +354,33 @@ Noodl.defineModule({
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+function isPercentage(size) {
+  return size && size[size.length - 1] === '%';
+}
+
+function getPercentage(size) {
+  return Number(size.slice(0, -1));
+}
+
+function getSizeWithMargins(size, startMargin, endMargin) {
+  if (!startMargin && !endMargin) {
+    return size;
+  }
+
+  var css = "calc(".concat(size);
+
+  if (startMargin) {
+    css += " - ".concat(startMargin);
+  }
+
+  if (endMargin) {
+    css += " - ".concat(endMargin);
+  }
+
+  css += ')';
+  return css;
+}
+
 module.exports = {
   paddingCssProps: {
     paddingLeft: {
@@ -478,6 +505,50 @@ module.exports = {
       displayName: "Shadow Color",
       type: "color",
       "default": "rgba(0,0,0,0.2)"
+    }
+  },
+  size: function size(style, props) {
+    if (props.parentLayout === 'none') {
+      style.position = 'absolute';
+    }
+
+    if (props.sizeMode === 'explicit') {
+      style.width = props.width;
+      style.height = props.height;
+    } else if (props.sizeMode === 'contentHeight') {
+      style.width = props.width;
+    } else if (props.sizeMode === 'contentWidth') {
+      style.height = props.height;
+    }
+
+    style.flexShrink = 0;
+
+    if (props.parentLayout === 'row' && style.position === 'relative') {
+      if (isPercentage(style.width) && !props.fixedWidth) {
+        style.flexGrow = getPercentage(style.width);
+        style.flexShrink = 1;
+      }
+
+      if (isPercentage(style.height) && !props.fixedHeight) {
+        style.height = getSizeWithMargins(style.height, style.marginTop, style.marginBottom);
+      }
+    } else if (props.parentLayout === 'column' && style.position === 'relative') {
+      if (isPercentage(style.width) && !props.fixedWidth) {
+        style.width = getSizeWithMargins(style.width, style.marginLeft, style.marginRight);
+      }
+
+      if (isPercentage(style.height) && !props.fixedHeight) {
+        style.flexGrow = getPercentage(style.height);
+        style.flexShrink = 1;
+      }
+    } else if (style.position !== 'relative') {
+      if (isPercentage(style.width)) {
+        style.width = getSizeWithMargins(style.width, style.marginLeft, style.marginRight);
+      }
+
+      if (isPercentage(style.height)) {
+        style.height = getSizeWithMargins(style.height, style.marginTop, style.marginBottom);
+      }
     }
   }
 };
@@ -607,7 +678,10 @@ var TableCellNode = Noodl.defineReactNode({
           value: "th"
         }]
       },
-      "default": "td"
+      "default": "td",
+      tooltip: {
+        standard: 'Data Table Cell Or Header Table Cell'
+      }
     },
     visible: {
       index: 210,
@@ -625,18 +699,6 @@ var TableCellNode = Noodl.defineReactNode({
     }
   }, boxShadowProps),
   inputCss: _objectSpread({
-    height: {
-      index: 100,
-      group: "Dimensions",
-      displayName: "Height",
-      type: {
-        name: "number",
-        units: ["px"],
-        defaultUnit: "px"
-      },
-      "default": undefined,
-      allowVisualStates: true
-    },
     opacity: {
       index: 200,
       group: "Style",
@@ -652,6 +714,27 @@ var TableCellNode = Noodl.defineReactNode({
       type: "color",
       allowVisualStates: true,
       "default": "transparent",
+      applyDefault: false
+    },
+    justifyContent: {
+      index: 14,
+      group: "Align and justify content",
+      displayName: "Justify Content",
+      type: {
+        name: "enum",
+        enums: [{
+          label: "Start",
+          value: "flex-start"
+        }, {
+          label: "End",
+          value: "flex-end"
+        }, {
+          label: "Center",
+          value: "center"
+        }],
+        alignComp: "justify-content"
+      },
+      "default": "flex-start",
       applyDefault: false
     }
   }, paddingCssProps),
@@ -697,17 +780,6 @@ var TableHeadNode = Noodl.defineReactNode({
       group: "Advanced Style",
       type: "string",
       "default": "table-head"
-    }
-  },
-  inputCss: {
-    backgroundColor: {
-      index: 201,
-      displayName: "Background Color",
-      group: "Style",
-      type: "color",
-      allowVisualStates: true,
-      "default": "transparent",
-      applyDefault: false
     }
   },
   outputProps: {
@@ -785,7 +857,7 @@ var TableRowNode = Noodl.defineReactNode({
   }, boxShadowProps),
   inputCss: {
     height: {
-      index: 1,
+      index: 101,
       group: "Dimensions",
       displayName: "Height",
       type: {
@@ -811,27 +883,6 @@ var TableRowNode = Noodl.defineReactNode({
       type: "color",
       allowVisualStates: true,
       "default": "transparent",
-      applyDefault: false
-    },
-    justifyContent: {
-      index: 14,
-      group: "Align and justify content",
-      displayName: "Justify Content",
-      type: {
-        name: "enum",
-        enums: [{
-          label: "Start",
-          value: "flex-start"
-        }, {
-          label: "End",
-          value: "flex-end"
-        }, {
-          label: "Center",
-          value: "center"
-        }],
-        alignComp: "justify-content"
-      },
-      "default": "flex-start",
       applyDefault: false
     }
   },
@@ -859,14 +910,19 @@ module.exports = TableRowNode;
   !*** ./src/nodes/table.js ***!
   \****************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+var _require = __webpack_require__(/*! ./helper */ "./src/nodes/helper.js"),
+    size = _require.size;
 
 function TableComponent(props) {
   var style = {
     position: "relative",
     borderSpacing: props.borderSpacingVertical + " " + props.borderSpacingHorizontal,
-    borderCollapse: props.borderCollapse
+    // borderSpacingVertical == 0 && borderSpacingHorizontal == 0 equals to borderSpacing collapse
+    borderCollapse: "separate"
   };
+  size(style, props);
   return /*#__PURE__*/React.createElement("table", {
     className: props.cssClassName,
     style: style,
@@ -881,6 +937,52 @@ var TableNode = Noodl.defineReactNode({
     return TableComponent;
   },
   inputProps: {
+    sizeMode: {
+      index: 10,
+      type: {
+        name: "enum",
+        enums: [{
+          value: 'explicit',
+          label: 'Explicit'
+        }, {
+          value: 'contentWidth',
+          label: 'Content Width'
+        }, {
+          value: 'contentHeight',
+          label: 'Content Height'
+        }, {
+          value: 'contentSize',
+          label: 'Content Size'
+        }],
+        allowEditOnly: true,
+        sizeComp: 'mode'
+      },
+      group: "Dimensions",
+      displayName: "Size Mode",
+      "default": 'contentHeight'
+    },
+    width: {
+      index: 11,
+      group: 'Dimensions',
+      displayName: 'Width',
+      type: {
+        name: "number",
+        units: ["%", "px", 'vw'],
+        defaultUnit: "%"
+      },
+      "default": 100
+    },
+    height: {
+      index: 13,
+      group: 'Dimensions',
+      displayName: 'Height',
+      type: {
+        name: "number",
+        units: ["%", "px", 'vh'],
+        defaultUnit: "%"
+      },
+      "default": 100
+    },
     borderSpacingHorizontal: {
       "default": 0,
       displayName: "Horizontal Gap",
@@ -900,21 +1002,6 @@ var TableNode = Noodl.defineReactNode({
         units: ["px", "rem", "em", "cm"],
         defaultUnit: "px"
       }
-    },
-    borderCollapse: {
-      type: {
-        name: "enum",
-        enums: [{
-          label: "Collapse",
-          value: "collapse"
-        }, {
-          label: "Separate",
-          value: "separate"
-        }]
-      },
-      "default": "separate",
-      displayName: "Border Collapse",
-      group: "Table Style"
     },
     cssClassName: {
       index: 100000,

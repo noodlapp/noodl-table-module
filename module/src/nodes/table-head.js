@@ -22,17 +22,6 @@ const TableHeadNode = Noodl.defineReactNode({
       default: "table-head",
     },
   },
-  inputCss: {
-    backgroundColor: {
-      index: 201,
-      displayName: "Background Color",
-      group: "Style",
-      type: "color",
-      allowVisualStates: true,
-      default: "transparent",
-      applyDefault: false,
-    },
-  },
   outputProps: {
     onClick: { type: "signal", displayName: "Click" },
   },

@@ -1,9 +1,14 @@
+const { size } = require('./helper');
+
 function TableComponent(props) {
   let style = {
     position: "relative",
     borderSpacing: props.borderSpacingVertical + " " + props.borderSpacingHorizontal,
-    borderCollapse: props.borderCollapse,
+    // borderSpacingVertical == 0 && borderSpacingHorizontal == 0 equals to borderSpacing collapse
+    borderCollapse: "separate"
   };
+
+  size(style, props);
 
   return (
     <table className={props.cssClassName} style={style} onClick={props.onClick}>
@@ -19,6 +24,45 @@ const TableNode = Noodl.defineReactNode({
     return TableComponent;
   },
   inputProps: {
+    sizeMode: {
+      index: 10,
+      type: {
+        name: "enum",
+        enums: [
+          { value: 'explicit', label: 'Explicit' },
+          { value: 'contentWidth', label: 'Content Width' },
+          { value: 'contentHeight', label: 'Content Height' },
+          { value: 'contentSize', label: 'Content Size' }
+        ],
+        allowEditOnly: true,
+        sizeComp: 'mode',
+      },
+      group: "Dimensions",
+      displayName: "Size Mode",
+      default: 'contentHeight',
+    },
+    width: {
+      index: 11,
+      group: 'Dimensions',
+      displayName: 'Width',
+      type: {
+        name: "number",
+        units: ["%", "px", 'vw'],
+        defaultUnit: "%"
+      },
+      default: 100
+    },
+    height: {
+      index: 13,
+      group: 'Dimensions',
+      displayName: 'Height',
+      type: {
+        name: "number",
+        units: ["%", "px", 'vh'],
+        defaultUnit: "%"
+      },
+      default: 100
+    },
     borderSpacingHorizontal: {
       default: 0,
       displayName: "Horizontal Gap",
@@ -38,18 +82,6 @@ const TableNode = Noodl.defineReactNode({
         units: ["px", "rem", "em", "cm"],
         defaultUnit: "px",
       },
-    },
-    borderCollapse: {
-      type: {
-        name: "enum",
-        enums: [
-          { label: "Collapse", value: "collapse" },
-          { label: "Separate", value: "separate" },
-        ],
-      },
-      default: "separate",
-      displayName: "Border Collapse",
-      group: "Table Style",
     },
     cssClassName: {
       index: 100000,
