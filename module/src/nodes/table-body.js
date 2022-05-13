@@ -1,5 +1,9 @@
 function TableBodyComponent(props) {
-  let style = { position: "relative", backgroundColor: props.backgroundColor };
+  const style = {
+    position: "relative",
+    backgroundColor: props.backgroundColor,
+    ...(props.style || {}),
+  };
   return (
     <tbody className={props.className} style={style} onClick={props.onClick}>
       {props.children}

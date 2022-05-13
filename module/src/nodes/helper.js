@@ -26,7 +26,7 @@ function getSizeWithMargins(size, startMargin, endMargin) {
 module.exports = {
   paddingCssProps: {
     paddingLeft: {
-      index: 64,
+      index: 0,
       group: "Padding",
       default: 0,
       applyDefault: false,
@@ -40,7 +40,7 @@ module.exports = {
       allowVisualStates: true,
     },
     paddingRight: {
-      index: 65,
+      index: 0,
       group: "Padding",
       default: 0,
       applyDefault: false,
@@ -54,7 +54,7 @@ module.exports = {
       allowVisualStates: true,
     },
     paddingTop: {
-      index: 66,
+      index: 0,
       group: "Padding",
       displayName: "Pad Top",
       default: 0,
@@ -68,7 +68,7 @@ module.exports = {
       allowVisualStates: true,
     },
     paddingBottom: {
-      index: 67,
+      index: 0,
       group: "Padding",
       displayName: "Pad Bottom",
       default: 0,
@@ -82,6 +82,7 @@ module.exports = {
       allowVisualStates: true,
     },
   },
+
   boxShadowProps: {
     boxShadowEnabled: {
       index: 250,

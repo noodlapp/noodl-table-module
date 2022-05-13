@@ -1,7 +1,11 @@
 const { boxShadowProps } = require('./helper');
 
 function TableRowComponent(props) {
-  let style = { position: "relative", backgroundColor: props.backgroundColor };
+  const style = {
+    position: "relative",
+    backgroundColor: props.backgroundColor,
+    ...(props.style || {}),
+  };
 
   if (props.boxShadowEnabled) {
     style.boxShadow = `${props.boxShadowInset ? "inset " : ""}${

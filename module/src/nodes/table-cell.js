@@ -1,7 +1,11 @@
 const { paddingCssProps, boxShadowProps } = require("./helper");
 
 function TableCellComponent(props) {
-  let style = { position: "relative" };
+  let style = {
+    position: "relative",
+    verticalAlign: props.verticalAlign,
+    ...(props.style || {}),
+  };
 
   if (props.boxShadowEnabled) {
     style.boxShadow = `${props.boxShadowInset ? "inset " : ""}${
@@ -68,6 +72,21 @@ const TableCellNode = Noodl.defineReactNode({
       type: "string",
       default: "table-header-cell",
     },
+    verticalAlign: {
+      index: 14,
+      group: "Alignment",
+      displayName: "Vertical Align",
+      type: {
+        name: "enum",
+        enums: [
+          { label: "Top", value: "top" },
+          { label: "Center", value: "middle" },
+          { label: "Bottom", value: "bottom" },
+          { label: "Baseline", value: "baseline" },
+        ],
+      },
+      default: "middle",
+    },
     ...boxShadowProps,
   },
   inputCss: {
@@ -88,23 +107,7 @@ const TableCellNode = Noodl.defineReactNode({
       default: "transparent",
       applyDefault: false,
     },
-    justifyContent: {
-      index: 14,
-      group: "Align and justify content",
-      displayName: "Justify Content",
-      type: {
-        name: "enum",
-        enums: [
-          { label: "Start", value: "flex-start" },
-          { label: "End", value: "flex-end" },
-          { label: "Center", value: "center" },
-        ],
-        alignComp: "justify-content",
-      },
-      default: "flex-start",
-      applyDefault: false,
-    },
-    ...paddingCssProps,
+    ...paddingCssProps
   },
   outputProps: {
     onClick: { type: "signal", displayName: "Click" },

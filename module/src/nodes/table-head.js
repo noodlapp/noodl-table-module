@@ -1,5 +1,8 @@
 function TableHeadComponent(props) {
-  let style = { position: "relative" };
+  const style = {
+    position: "relative",
+    ...(props.style || {}),
+  };
   return (
     <thead className={props.cssClassName} style={style} onClick={props.onClick}>
       {props.children}

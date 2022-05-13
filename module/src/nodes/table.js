@@ -1,11 +1,12 @@
 const { size } = require('./helper');
 
 function TableComponent(props) {
-  let style = {
+  const style = {
     position: "relative",
     borderSpacing: props.borderSpacingVertical + " " + props.borderSpacingHorizontal,
     // borderSpacingVertical == 0 && borderSpacingHorizontal == 0 equals to borderSpacing collapse
-    borderCollapse: "separate"
+    borderCollapse: "separate",
+    ...(props.style || {}),
   };
 
   size(style, props);

@@ -384,7 +384,7 @@ function getSizeWithMargins(size, startMargin, endMargin) {
 module.exports = {
   paddingCssProps: {
     paddingLeft: {
-      index: 64,
+      index: 0,
       group: "Padding",
       "default": 0,
       applyDefault: false,
@@ -398,7 +398,7 @@ module.exports = {
       allowVisualStates: true
     },
     paddingRight: {
-      index: 65,
+      index: 0,
       group: "Padding",
       "default": 0,
       applyDefault: false,
@@ -412,7 +412,7 @@ module.exports = {
       allowVisualStates: true
     },
     paddingTop: {
-      index: 66,
+      index: 0,
       group: "Padding",
       displayName: "Pad Top",
       "default": 0,
@@ -426,7 +426,7 @@ module.exports = {
       allowVisualStates: true
     },
     paddingBottom: {
-      index: 67,
+      index: 0,
       group: "Padding",
       displayName: "Pad Bottom",
       "default": 0,
@@ -562,11 +562,18 @@ module.exports = {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function TableBodyComponent(props) {
-  var style = {
+  var style = _objectSpread({
     position: "relative",
     backgroundColor: props.backgroundColor
-  };
+  }, props.style || {});
+
   return /*#__PURE__*/React.createElement("tbody", {
     className: props.className,
     style: style,
@@ -629,9 +636,10 @@ var _require = __webpack_require__(/*! ./helper */ "./src/nodes/helper.js"),
     boxShadowProps = _require.boxShadowProps;
 
 function TableCellComponent(props) {
-  var style = {
-    position: "relative"
-  };
+  var style = _objectSpread({
+    position: "relative",
+    verticalAlign: props.verticalAlign
+  }, props.style || {});
 
   if (props.boxShadowEnabled) {
     style.boxShadow = "".concat(props.boxShadowInset ? "inset " : "").concat(props.boxShadowOffsetX, " ").concat(props.boxShadowOffsetY, " ").concat(props.boxShadowBlurRadius, " ").concat(props.boxShadowSpreadRadius, " ").concat(props.boxShadowColor);
@@ -696,6 +704,28 @@ var TableCellNode = Noodl.defineReactNode({
       group: "Advanced Style",
       type: "string",
       "default": "table-header-cell"
+    },
+    verticalAlign: {
+      index: 14,
+      group: "Alignment",
+      displayName: "Vertical Align",
+      type: {
+        name: "enum",
+        enums: [{
+          label: "Top",
+          value: "top"
+        }, {
+          label: "Center",
+          value: "middle"
+        }, {
+          label: "Bottom",
+          value: "bottom"
+        }, {
+          label: "Baseline",
+          value: "baseline"
+        }]
+      },
+      "default": "middle"
     }
   }, boxShadowProps),
   inputCss: _objectSpread({
@@ -714,27 +744,6 @@ var TableCellNode = Noodl.defineReactNode({
       type: "color",
       allowVisualStates: true,
       "default": "transparent",
-      applyDefault: false
-    },
-    justifyContent: {
-      index: 14,
-      group: "Align and justify content",
-      displayName: "Justify Content",
-      type: {
-        name: "enum",
-        enums: [{
-          label: "Start",
-          value: "flex-start"
-        }, {
-          label: "End",
-          value: "flex-end"
-        }, {
-          label: "Center",
-          value: "center"
-        }],
-        alignComp: "justify-content"
-      },
-      "default": "flex-start",
       applyDefault: false
     }
   }, paddingCssProps),
@@ -756,10 +765,17 @@ module.exports = TableCellNode;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function TableHeadComponent(props) {
-  var style = {
+  var style = _objectSpread({
     position: "relative"
-  };
+  }, props.style || {});
+
   return /*#__PURE__*/React.createElement("thead", {
     className: props.cssClassName,
     style: style,
@@ -810,10 +826,10 @@ var _require = __webpack_require__(/*! ./helper */ "./src/nodes/helper.js"),
     boxShadowProps = _require.boxShadowProps;
 
 function TableRowComponent(props) {
-  var style = {
+  var style = _objectSpread({
     position: "relative",
     backgroundColor: props.backgroundColor
-  };
+  }, props.style || {});
 
   if (props.boxShadowEnabled) {
     style.boxShadow = "".concat(props.boxShadowInset ? "inset " : "").concat(props.boxShadowOffsetX, " ").concat(props.boxShadowOffsetY, " ").concat(props.boxShadowBlurRadius, " ").concat(props.boxShadowSpreadRadius, " ").concat(props.boxShadowColor);
@@ -912,16 +928,23 @@ module.exports = TableRowNode;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var _require = __webpack_require__(/*! ./helper */ "./src/nodes/helper.js"),
     size = _require.size;
 
 function TableComponent(props) {
-  var style = {
+  var style = _objectSpread({
     position: "relative",
     borderSpacing: props.borderSpacingVertical + " " + props.borderSpacingHorizontal,
     // borderSpacingVertical == 0 && borderSpacingHorizontal == 0 equals to borderSpacing collapse
     borderCollapse: "separate"
-  };
+  }, props.style || {});
+
   size(style, props);
   return /*#__PURE__*/React.createElement("table", {
     className: props.cssClassName,
